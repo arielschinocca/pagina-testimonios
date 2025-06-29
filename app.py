@@ -12,9 +12,13 @@ if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, "w") as f:
         json.dump([], f)
 
+@app.route("/")
+def index():
+    return "API testimonios activa"
+
 @app.route("/api/testimonios", methods=["GET"])
 def get_testimonios():
-    with open("testimonios.json") as f:
+    with open(DATA_FILE) as f:
         data = json.load(f)
     return jsonify(data)
 
@@ -25,15 +29,17 @@ def add_testimonio():
         "nombre": data.get("nombre", "Anónimo"),
         "texto": data.get("texto", "")
     }
-    with open("testimonios.json") as f:
+    with open(DATA_FILE) as f:
         testimonios = json.load(f)
     testimonios.append(nuevo)
-    with open("testimonios.json", "w") as f:
+    with open(DATA_FILE, "w") as f:
         json.dump(testimonios, f)
     return jsonify({"success": True}), 201
 
-
 if __name__ == "__main__":
     app.run()
+
+
+
 
 
