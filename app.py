@@ -8,6 +8,7 @@ CORS(app, resources={r"/*": {"origins": ["https://tarotcentaura.com"]}})
 
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
+print("Conectando a:", MONGO_URI)  # Agregado para debug
 db = client["tarotcentaura"]
 collection = db["testimonios"]
 
