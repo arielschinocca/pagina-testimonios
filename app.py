@@ -1,28 +1,24 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json
+from pymongo import MongoClient
 import os
 
 app = Flask(__name__)
-
-# Permitir solo tu dominio frontend para CORS
 CORS(app, resources={r"/*": {"origins": ["https://tarotcentaura.com"]}})
 
-DATA_FILE = "testimonios.json"
-
-if not os.path.exists(DATA_FILE):
-    with open(DATA_FILE, "w") as f:
-        json.dump([], f)
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client["tarotcentaura"]
+collection = db["testimonios"]
 
 @app.route("/")
 def home():
-    return "API Tarot Centaura funcionando"
+    return "API Tarot Centaura funcionando con MongoDB"
 
 @app.route("/api/testimonios", methods=["GET"])
 def get_testimonios():
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return jsonify(data)
+    testimonios = list(collection.find({}, {"_id": 0}))
+    return jsonify(testimonios)
 
 @app.route("/api/testimonios", methods=["POST"])
 def add_testimonio():
@@ -42,14 +38,7 @@ def add_testimonio():
         "puntuacion": puntuacion
     }
 
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        testimonios = json.load(f)
-
-    testimonios.append(nuevo)
-
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(testimonios, f, ensure_ascii=False, indent=2)
-
+    collection.insert_one(nuevo)
     return jsonify({"success": True}), 201
 
 if __name__ == "__main__":
