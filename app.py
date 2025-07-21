@@ -4,7 +4,12 @@ from pymongo import MongoClient
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://tarotcentaura.com"]}})
+CORS(app, resources={r"/*": {"origins": [
+    "https://www.tarotcentaura.com",
+    "https://tarotcentaura.com",
+    "https://pagina-testimonios-backend.onrender.com"
+]}})
+
 
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
