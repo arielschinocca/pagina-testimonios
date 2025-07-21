@@ -8,7 +8,8 @@ CORS(app, resources={r"/*": {"origins": [
     "https://www.tarotcentaura.com",
     "https://tarotcentaura.com",
     "https://pagina-testimonios-backend.onrender.com"
-]}})
+]}}, supports_credentials=True)
+
 
 
 MONGO_URI = os.getenv("MONGO_URI")
